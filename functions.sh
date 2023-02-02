@@ -71,17 +71,11 @@ function setupResultsDir {
     mkdir -p ${RESULTS_ARCHIVE_DIR}/${DATE}
     # Store the target of $RESULTS_DIR before $RESULTS_DIR get linked to
     # a different dir 
-    previous_results=$(readlink -f $RESULTS_DIR)
   
     rm -rf $RESULTS_DIR
     ln -s ${RESULTS_ARCHIVE_DIR}/${DATE} $RESULTS_DIR
     mkdir -p $TESTING_RESULTS_DIR
-    mkdir -p $BENCHMARK_RESULTS_DIR
     
-    old_asv_dir=$previous_results/benchmarks/asv
-    if [ -d $old_asv_dir ]; then
-        cp -r $old_asv_dir $BENCHMARK_RESULTS_DIR
-    fi
 }
 
 

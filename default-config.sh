@@ -26,17 +26,14 @@ RESULTS_ARCHIVE_DIR=${RESULTS_ARCHIVE_DIR:-${OUTPUT_DIR}/results}
 RESULTS_DIR=${RESULTS_DIR:-${RESULTS_ARCHIVE_DIR}/latest}
 METADATA_FILE=${METADATA_FILE:-${RESULTS_DIR}/metadata.sh}
 WORKSPACE=${WORKSPACE:-${OUTPUT_DIR}/workspace}
-TESTING_DIR=${TESTING_DIR:-${WORKSPACE}/testing}
-BENCHMARK_DIR=${BENCHMARK_DIR:-${WORKSPACE}/benchmark}
+TESTING_DIR=${TESTING_DIR:-${WORKSPACE}/cugraph/benchmarks/cugraph}
 SCRIPTS_DIR=$RAPIDS_MG_TOOLS_DIR
 
 # These really should be oerridden by the project config!
-CONDA_ENV=${CONDA_ENV:-rapids}
-PRIMARY_CONDA_PACKAGE_NAME=${PRIMARY_CONDA_PACKAGE_NAME:-condapackage}
-REPO_DIR_NAME=${REPO_DIR_NAME:-repo}
+CONDA_ENV=${CONDA_ENV:-base}
 
 GPUS_PER_NODE=${GPUS_PER_NODE:-8}
-WORKER_RMM_POOL_SIZE=${WORKER_RMM_POOL_SIZE:-24G}
+WORKER_RMM_POOL_SIZE=${WORKER_RMM_POOL_SIZE:-28G}
 DASK_CUDA_INTERFACE=${DASK_CUDA_INTERFACE:-ib0}
 DASK_SCHEDULER_PORT=${DASK_SCHEDULER_PORT:-8792}
 
@@ -51,23 +48,3 @@ ENV_EXPORT_FILE=${ENV_EXPORT_FILE:-${WORKSPACE}/$(basename ${CONDA_ENV})-${DATE}
 # that, and also assume the names "tests" and "benchmarks", and
 # therefore cannot be overridden by a project
 TESTING_RESULTS_DIR=${RESULTS_DIR}/tests
-BENCHMARK_RESULTS_DIR=${RESULTS_DIR}/benchmarks
-
-# FIXME: consider removing these or this FIXME, since the remaining
-# vars are only useful to communicate that some projects have scripts
-# that use these vars.
-
-# There is no default for this since it must be project-specific. This
-# is here for documentation purposes.  In most cases,
-# RAPIDS_DATASET_ROOT_DIR will be set to this in various test scripts
-# (which may enforce that it be set), and it should be set by the
-# project config.
-DATASETS_DIR=$DATASETS_DIR
-
-# There are no defaults for these, they are here for documentation
-# purposes since they will be used by various reporting scripts (which
-# may enforce that they be set), and they should be set by the project
-# config.
-WEBHOOK_URL=$WEBHOOK_URL
-S3_FILE_PREFIX=$S3_FILE_PREFIX
-S3_URL_PREFIX=$S3_URL_PREFIX
