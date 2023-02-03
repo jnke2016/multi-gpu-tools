@@ -49,6 +49,8 @@ CLUSTER_CONFIG_TYPE=${CLUSTER_CONFIG_TYPE:-TCP}
 START_SCHEDULER=0
 START_WORKERS=0
 
+DASK_CUDA_INTERFACE=$(ls /sys/class/net | grep ib | head -1)
+
 if (( ${NUMARGS} == 0 )); then
     echo "${HELP}"
     exit 0
@@ -113,28 +115,19 @@ function buildTcpArgs {
 
 function buildUCXWithInfinibandArgs {
 
-    export UCX_MAX_RNDV_RAILS=1
+    export DASK_DISTRIBUTED__COMM__UCX__CREATE_CUDA_CONTEXT=True
+    export DASK_DISTRIBUTED__RMM__POOL_SIZE=1GB
     export UCX_MEMTYPE_REG_WHOLE_ALLOC_TYPES=cuda
-
-    export DASK_UCX__CUDA_COPY=True
-    export DASK_UCX__TCP=True
-    export DASK_UCX__NVLINK=True
-    export DASK_UCX__INFINIBAND=True
-    export DASK_UCX__RDMACM=True
-    export DASK_RMM__POOL_SIZE=0.5GB
 
     SCHEDULER_ARGS="--protocol=ucx
                 --port=$DASK_SCHEDULER_PORT
-                --interface=$DASK_CUDA_INTERFACE
+                --interface=$DASK_CUDA_INTERFACEf
                 --scheduler-file $SCHEDULER_FILE
                "
 
-    WORKER_ARGS="--enable-tcp-over-ucx
-                --enable-nvlink
-                --enable-infiniband
-                --enable-rdmacm
-                --rmm-pool-size=$WORKER_RMM_POOL_SIZE
+    WORKER_ARGS="--rmm-pool-size=$WORKER_RMM_POOL_SIZE
                 --local-directory=/tmp/$LOGNAME
+                --interface=$DASK_CUDA_INTERFACE
                 --scheduler-file=$SCHEDULER_FILE
                 "
 }
@@ -256,4 +249,3 @@ if [[ $scheduler_pid != "" ]]; then
     echo "waiting for scheduler pid $scheduler_pid to finish before exiting script..."
     wait $scheduler_pid
 fi
-
