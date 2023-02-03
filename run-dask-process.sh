@@ -191,7 +191,7 @@ num_scheduler_tries=0
 function startScheduler {
     mkdir -p $(dirname $SCHEDULER_FILE)
     echo "RUNNING: \"python -m distributed.cli.dask_scheduler $SCHEDULER_ARGS\"" > $SCHEDULER_LOG
-    dask-scheduler $SCHEDULER_ARGS >> $SCHEDULER_LOG 2>&1 &
+    CUDA_VISIBLE_DEVICES='0' dask-scheduler $SCHEDULER_ARGS >> $SCHEDULER_LOG 2>&1 &
     scheduler_pid=$!
 }
 
@@ -235,8 +235,14 @@ if [[ $START_WORKERS == 1 ]]; then
         sleep 2
     done
     echo "RUNNING: \"python -m dask_cuda.cli.dask_cuda_worker $WORKER_ARGS\"" > $WORKERS_LOG
-    dask-cuda-worker $WORKER_ARGS >> $WORKERS_LOG 2>&1 &
+    if [[ $START_SCHEDULER == 1 ]]; then
+        #CUDA_VISIBLE_DEVICES='1,2,3,4,5,6,7,8,9,10,11,12,13,14,15' dask-cuda-worker $WORKER_ARGS >> $WORKERS_LOG 2>&1 &
+        CUDA_VISIBLE_DEVICES='1,2,3,4,5,6,7' dask-cuda-worker $WORKER_ARGS >> $WORKERS_LOG 2>&1 &
+    else
+        dask-cuda-worker $WORKER_ARGS >> $WORKERS_LOG 2>&1 &
+    fi
     worker_pid=$!
+
     echo "worker(s) started."
 fi
 

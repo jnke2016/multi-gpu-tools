@@ -111,6 +111,9 @@ if [[ $NUM_NODES -gt 1 ]]; then
         # it here for subprocesses to see.
         export SCHEDULER_FILE=$SCHEDULER_FILE
 
+        # expecting one less worker which is solely going to be used by the client
+        NUM_GPUS=$((NUM_GPUS-1))
+
         # Remove the handleTimeout and DASK_STARTUP_ERRORCODE
         # if want to debug for the scheduler file not being found
         # Starting the benchmark
