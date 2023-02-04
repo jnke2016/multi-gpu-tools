@@ -121,7 +121,7 @@ function buildUCXWithInfinibandArgs {
 
     SCHEDULER_ARGS="--protocol=ucx
                 --port=$DASK_SCHEDULER_PORT
-                --interface=$DASK_CUDA_INTERFACEf
+                --interface=$DASK_CUDA_INTERFACE
                 --scheduler-file $SCHEDULER_FILE
                "
 
